@@ -19,3 +19,22 @@ SELECT * FROM staging.st_bancos;
 SELECT * FROM staging.st_movimentos;
 SELECT * FROM staging.st_plano_contas;
 SELECT * FROM staging.st_saldo_anterior;
+
+-- Transformações
+
+-- staging, tabela st_bancos
+-- Coluna Banco_ID, alterar tipo de dado:
+ALTER TABLE staging.st_bancos 
+ALTER COLUMN "Banco_ID" TYPE SMALLINT;
+
+SELECT * FROM staging.st_bancos;
+
+-- staging, tabela st_plano_contas
+-- Colunas Subgrupo_ID e Conta_ID, alterar tipo de dado:
+ALTER TABLE staging.st_plano_contas
+ALTER COLUMN "Subgrupo_ID" TYPE SMALLINT;
+
+ALTER TABLE staging.st_plano_contas
+ALTER COLUMN "Conta_ID" TYPE SMALLINT;
+
+SELECT * FROM staging.st_plano_contas;
