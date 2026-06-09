@@ -64,3 +64,48 @@ ALTER TABLE staging.st_saldo_anterior
     ALTER COLUMN "Valor"    TYPE NUMERIC(15, 2);
 */
 
+-- staging, tabela st_movimentos
+-- Coluna Tipo:
+UPDATE staging.st_movimentos
+SET "Tipo" = 'E'
+WHERE "Tipo" = 'Entradas';
+
+UPDATE staging.st_movimentos
+SET "Tipo" = 'S'
+WHERE "Tipo" = 'Saídas';
+
+SELECT * FROM staging.st_movimentos;
+
+-- Coluna Data:
+ALTER TABLE staging.st_movimentos
+ALTER COLUMN "Data" TYPE Date
+USING "Data"::date;
+
+SELECT * FROM staging.st_movimentos;
+
+-- Coluna Valor:
+ALTER TABLE staging.st_movimentos
+ALTER COLUMN "Valor" TYPE NUMERIC(15, 2);
+
+SELECT * FROM staging.st_movimentos;
+
+-- Inserindo colunas Banco_ID e Conta_ID. 
+-- Excluindo colunas Banco e Conta.
+CREATE TABLE staging.st_movimentos_new AS
+SELECT
+	b."Banco_ID",
+	c."Conta_ID",
+	m."Tipo",
+	m."Data",
+	m."Valor"
+FROM staging.st_movimentos m
+LEFT JOIN staging.st_bancos b ON m."Banco" = b."Banco"
+LEFT JOIN staging.st_plano_contas c ON m."Conta" = c."Conta";
+
+SELECT * FROM staging.st_movimentos_new;
+
+-- Resumo tabelas tratadas, staging:
+SELECT * FROM staging.st_bancos;
+SELECT * FROM staging.st_plano_contas;
+SELECT * FROM staging.st_saldo_anterior;
+SELECT * FROM staging.st_movimentos_new;
