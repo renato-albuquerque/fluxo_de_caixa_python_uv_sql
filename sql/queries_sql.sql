@@ -39,6 +39,13 @@ ALTER COLUMN "Conta_ID" TYPE SMALLINT;
 
 SELECT * FROM staging.st_plano_contas;
 
+/* 
+Consulta acima poderia ser agrupada:
+ALTER TABLE staging.st_plano_contas
+    ALTER COLUMN "Subgrupo_ID" TYPE SMALLINT,
+    ALTER COLUMN "Conta_ID"    TYPE SMALLINT;
+*/	
+
 -- staging, tabela st_saldo_anterior
 -- Coluna Banco_ID, alterar tipo de dado:
 ALTER TABLE staging.st_saldo_anterior
@@ -49,3 +56,11 @@ ALTER TABLE staging.st_saldo_anterior
 ALTER COLUMN "Valor" TYPE NUMERIC(15, 2);
 
 SELECT * FROM staging.st_saldo_anterior;
+
+/*
+Consulta acima poderia ser agrupada:
+ALTER TABLE staging.st_saldo_anterior
+    ALTER COLUMN "Banco_ID" TYPE SMALLINT,
+    ALTER COLUMN "Valor"    TYPE NUMERIC(15, 2);
+*/
+
