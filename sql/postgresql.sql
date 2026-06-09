@@ -109,3 +109,6 @@ SELECT * FROM staging.st_bancos;
 SELECT * FROM staging.st_plano_contas;
 SELECT * FROM staging.st_saldo_anterior;
 SELECT * FROM staging.st_movimentos_new;
+
+-- Tabelas dimensão x fato a serem criadas:
+-- dim_bancos, dim_contas, dim_calendario, f_movimentos, f_saldo
