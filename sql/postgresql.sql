@@ -55,14 +55,18 @@ ALTER COLUMN "Banco_ID" TYPE SMALLINT;
 ALTER TABLE staging.st_saldo_anterior
 ALTER COLUMN "Valor" TYPE NUMERIC(15, 2);
 
-SELECT * FROM staging.st_saldo_anterior;
-
 /*
 Consulta acima poderia ser agrupada:
 ALTER TABLE staging.st_saldo_anterior
     ALTER COLUMN "Banco_ID" TYPE SMALLINT,
     ALTER COLUMN "Valor"    TYPE NUMERIC(15, 2);
 */
+
+-- Inserir coluna Saldo_ID
+ALTER TABLE staging.st_saldo_anterior
+ADD COLUMN "Saldo_ID" SMALLINT GENERATED ALWAYS AS IDENTITY;
+
+SELECT * FROM staging.st_saldo_anterior;
 
 -- staging, tabela st_movimentos
 -- Coluna Tipo:
@@ -110,5 +114,52 @@ SELECT * FROM staging.st_plano_contas;
 SELECT * FROM staging.st_saldo_anterior;
 SELECT * FROM staging.st_movimentos_new;
 
+-- DW (Data Warehouse)
 -- Tabelas dimensão x fato a serem criadas:
--- dim_bancos, dim_contas, dim_calendario, f_movimentos, f_saldo
+-- dim_bancos, dim_plano_contas, dim_calendario, f_movimentos_new, f_saldo_anterior
+
+-- Criar tabela dimensão dim_bancos.
+CREATE TABLE dw.dim_bancos AS TABLE staging.st_bancos;
+
+-- Definir coluna Banco_ID como primary key.
+ALTER TABLE dw.dim_bancos
+ADD CONSTRAINT pk_dim_bancos PRIMARY KEY ("Banco_ID");
+
+SELECT * FROM dw.dim_bancos;
+
+-- Criar tabela dimensão dim_plano_contas.
+CREATE TABLE dw.dim_plano_contas AS TABLE staging.st_plano_contas;
+
+-- Definir coluna Conta_ID como primary key.
+ALTER TABLE dw.dim_plano_contas
+ADD CONSTRAINT pk_dim_plano_contas PRIMARY KEY ("Conta_ID");
+
+SELECT * FROM dw.dim_plano_contas;
+
+-- Criar tabela fato ft_saldo_anterior.
+CREATE TABLE dw.ft_saldo_anterior AS TABLE staging.st_saldo_anterior;
+
+-- Definir coluna Saldo_ID como primary key (PK) & Banco_ID como foreign key (FK).
+ALTER TABLE dw.ft_saldo_anterior
+ADD CONSTRAINT pk_ft_saldo_anterior PRIMARY KEY ("Saldo_ID");
+
+ALTER TABLE dw.ft_saldo_anterior
+ADD CONSTRAINT fk_ft_saldo_anterior_dim_bancos
+FOREIGN KEY ("Banco_ID") REFERENCES dw.dim_bancos ("Banco_ID");
+
+SELECT * FROM dw.ft_saldo_anterior;
+
+-- Query para verificar as chaves PK e FK da tabela dw.ft_saldo_anterior:
+SELECT
+    constraint_name,
+    column_name
+FROM information_schema.key_column_usage
+WHERE table_schema = 'dw'
+AND table_name = 'ft_saldo_anterior';
+
+
+
+
+
+
+
