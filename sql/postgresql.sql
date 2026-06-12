@@ -157,9 +157,125 @@ FROM information_schema.key_column_usage
 WHERE table_schema = 'dw'
 AND table_name = 'ft_saldo_anterior';
 
+-- Criar tabela dim_calendario.
+CREATE TABLE dw.dim_calendario (
+    -- PK
+    data_id             INTEGER      NOT NULL PRIMARY KEY,
+
+    -- Data real
+    data                DATE         NOT NULL,
+
+    -- Componentes básicos
+    nr_ano              SMALLINT     NOT NULL,
+    nr_mes              SMALLINT     NOT NULL,  -- 1-12
+    nr_dia              SMALLINT     NOT NULL,  -- 1-31
+    nr_trimestre        SMALLINT     NOT NULL,  -- 1-4
+    nr_semana_ano       SMALLINT     NOT NULL,  -- ISO 8601: 1-53
+    nr_dia_semana       SMALLINT     NOT NULL,  -- ISO: seg=1 ... dom=7
+    nr_dia_ano          SMALLINT     NOT NULL,  -- 1-366
+
+    -- Nomes por extenso (pt-BR)
+    nm_dia_semana       VARCHAR(15)  NOT NULL,  -- 'Segunda-feira' ...
+    nm_dia_semana_abrev VARCHAR(5)   NOT NULL,  -- 'Seg' ...
+    nm_mes              VARCHAR(15)  NOT NULL,  -- 'Janeiro' ...
+    nm_mes_abrev        VARCHAR(5)   NOT NULL,  -- 'Jan' ...
+
+    -- Chaves "inteligentes" para agrupamentos rápidos
+    nr_ano_mes          INTEGER      NOT NULL  -- AAAAMM
+);
+
+-- Popular tabela dw.dim_calendario
+INSERT INTO dw.dim_calendario (
+    data_id,
+    data,
+    nr_ano,
+    nr_mes,
+    nr_dia,
+    nr_trimestre,
+    nr_semana_ano,
+    nr_dia_semana,
+    nr_dia_ano,
+    nm_dia_semana,
+    nm_dia_semana_abrev,
+    nm_mes,
+    nm_mes_abrev,
+    nr_ano_mes
+)
+SELECT
+    TO_CHAR(dt, 'YYYYMMDD')::INTEGER AS data_id,
+    dt AS data,
+
+    EXTRACT(YEAR FROM dt)::SMALLINT AS nr_ano,
+    EXTRACT(MONTH FROM dt)::SMALLINT AS nr_mes,
+    EXTRACT(DAY FROM dt)::SMALLINT AS nr_dia,
+    EXTRACT(QUARTER FROM dt)::SMALLINT AS nr_trimestre,
+
+    EXTRACT(WEEK FROM dt)::SMALLINT AS nr_semana_ano,
+
+    EXTRACT(ISODOW FROM dt)::SMALLINT AS nr_dia_semana,
+
+    EXTRACT(DOY FROM dt)::SMALLINT AS nr_dia_ano,
+
+    CASE EXTRACT(ISODOW FROM dt)
+        WHEN 1 THEN 'Segunda-feira'
+        WHEN 2 THEN 'Terça-feira'
+        WHEN 3 THEN 'Quarta-feira'
+        WHEN 4 THEN 'Quinta-feira'
+        WHEN 5 THEN 'Sexta-feira'
+        WHEN 6 THEN 'Sábado'
+        WHEN 7 THEN 'Domingo'
+    END AS nm_dia_semana,
+
+    CASE EXTRACT(ISODOW FROM dt)
+        WHEN 1 THEN 'Seg'
+        WHEN 2 THEN 'Ter'
+        WHEN 3 THEN 'Qua'
+        WHEN 4 THEN 'Qui'
+        WHEN 5 THEN 'Sex'
+        WHEN 6 THEN 'Sáb'
+        WHEN 7 THEN 'Dom'
+    END AS nm_dia_semana_abrev,
+
+    CASE EXTRACT(MONTH FROM dt)
+        WHEN 1 THEN 'Janeiro'
+        WHEN 2 THEN 'Fevereiro'
+        WHEN 3 THEN 'Março'
+        WHEN 4 THEN 'Abril'
+        WHEN 5 THEN 'Maio'
+        WHEN 6 THEN 'Junho'
+        WHEN 7 THEN 'Julho'
+        WHEN 8 THEN 'Agosto'
+        WHEN 9 THEN 'Setembro'
+        WHEN 10 THEN 'Outubro'
+        WHEN 11 THEN 'Novembro'
+        WHEN 12 THEN 'Dezembro'
+    END AS nm_mes,
+
+    CASE EXTRACT(MONTH FROM dt)
+        WHEN 1 THEN 'Jan'
+        WHEN 2 THEN 'Fev'
+        WHEN 3 THEN 'Mar'
+        WHEN 4 THEN 'Abr'
+        WHEN 5 THEN 'Mai'
+        WHEN 6 THEN 'Jun'
+        WHEN 7 THEN 'Jul'
+        WHEN 8 THEN 'Ago'
+        WHEN 9 THEN 'Set'
+        WHEN 10 THEN 'Out'
+        WHEN 11 THEN 'Nov'
+        WHEN 12 THEN 'Dez'
+    END AS nm_mes_abrev,
+
+    TO_CHAR(dt, 'YYYYMM')::INTEGER AS nr_ano_mes
+
+FROM generate_series(
+        DATE '2020-01-01',
+        DATE '2035-12-31',
+        INTERVAL '1 day'
+     ) AS g(dt);
 
 
+SELECT * FROM dw.dim_calendario;
 
-
-
+-- Criar tabela fato ft_movimentos.
 
