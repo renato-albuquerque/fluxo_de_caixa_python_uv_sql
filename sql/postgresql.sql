@@ -290,3 +290,72 @@ SELECT * FROM dw.ft_movimentos;
 
 -- Views para conectar com power bi:
 
+-- vw_dim_bancos
+CREATE OR REPLACE VIEW dw.vw_dim_bancos AS
+SELECT
+  "Banco_ID",
+  "Banco"
+from dw.dim_bancos;
+
+SELECT * FROM dw.vw_dim_bancos;
+
+-- vw_dim_plano_contas
+CREATE OR REPLACE VIEW dw.vw_dim_plano_contas AS
+SELECT
+  "Conta_ID",
+  "Conta",
+  "Subgrupo_ID",
+  "Subgrupo"
+from dw.dim_plano_contas;
+
+SELECT * FROM dw.vw_dim_plano_contas;
+
+-- vw_dim_calendario
+CREATE OR REPLACE VIEW dw.vw_dim_calendario AS
+SELECT
+  	data_id,
+    data,
+    nr_ano,
+    nr_mes,
+    nr_dia,
+    nr_trimestre,
+    nr_semana_ano,
+    nr_dia_semana,
+    nr_dia_ano,
+    nm_dia_semana,
+    nm_dia_semana_abrev,
+    nm_mes,
+    nm_mes_abrev,
+    nr_ano_mes
+FROM dw.dim_calendario;
+
+SELECT * FROM dw.vw_dim_calendario;
+
+-- vw_fato_saldo_anterior
+CREATE OR REPLACE VIEW dw.vw_ft_saldo_anterior AS
+SELECT
+  "Saldo_ID",
+  "Banco_ID",
+  "Valor"
+FROM dw.ft_saldo_anterior;
+
+SELECT * FROM dw.vw_ft_saldo_anterior;
+
+-- vw_ft_movimentos
+CREATE OR REPLACE VIEW dw.vw_ft_movimentos AS
+select
+  "Banco_ID",  
+  "Conta_ID",   
+  "Tipo",
+  "Data",
+  "Valor"
+FROM dw.ft_movimentos;
+
+SELECT * FROM dw.vw_ft_movimentos;
+
+-- Resumo views criadas:
+vw_dim_bancos
+vw_dim_plano_contas
+vw_dim_calendario
+vw_ft_saldo_anterior
+vw_ft_movimentos
