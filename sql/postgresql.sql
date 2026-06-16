@@ -354,8 +354,10 @@ FROM dw.ft_movimentos;
 SELECT * FROM dw.vw_ft_movimentos;
 
 -- Resumo views criadas:
-vw_dim_bancos
-vw_dim_plano_contas
-vw_dim_calendario
-vw_ft_saldo_anterior
-vw_ft_movimentos
+SELECT * FROM dw.vw_dim_bancos;
+SELECT * FROM dw.vw_dim_plano_contas;
+SELECT * FROM dw.vw_dim_calendario;
+SELECT * FROM dw.vw_ft_saldo_anterior;
+SELECT * FROM dw.vw_ft_movimentos;
+
+SELECT vw_dim_bancos;
