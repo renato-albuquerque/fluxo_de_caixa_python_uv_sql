@@ -359,5 +359,3 @@ SELECT * FROM dw.vw_dim_plano_contas;
 SELECT * FROM dw.vw_dim_calendario;
 SELECT * FROM dw.vw_ft_saldo_anterior;
 SELECT * FROM dw.vw_ft_movimentos;
-
-SELECT vw_dim_bancos;
