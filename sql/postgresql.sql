@@ -269,6 +269,7 @@ SELECT
     TO_CHAR(dt, 'YYYYMM')::INTEGER AS nr_ano_mes
 
 FROM generate_series(
+=-´´´´´´´´´´´´´´´´´´´´[]
         DATE '2020-01-01',
         DATE '2035-12-31',
         INTERVAL '1 day'
@@ -278,4 +279,14 @@ FROM generate_series(
 SELECT * FROM dw.dim_calendario;
 
 -- Criar tabela fato ft_movimentos.
+CREATE TABLE dw.ft_movimentos AS TABLE staging.st_movimentos_new;
+
+-- Resumo tabelas dw:
+SELECT * FROM dw.dim_bancos;
+SELECT * FROM dw.dim_plano_contas;
+SELECT * FROM dw.dim_calendario;
+SELECT * FROM dw.ft_saldo_anterior;
+SELECT * FROM dw.ft_movimentos;
+
+-- Views para conectar com power bi:
 
