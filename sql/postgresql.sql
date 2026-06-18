@@ -269,12 +269,10 @@ SELECT
     TO_CHAR(dt, 'YYYYMM')::INTEGER AS nr_ano_mes
 
 FROM generate_series(
-=-´´´´´´´´´´´´´´´´´´´´[]
-        DATE '2020-01-01',
-        DATE '2035-12-31',
+        DATE '2023-01-01',
+        DATE '2024-12-31',
         INTERVAL '1 day'
      ) AS g(dt);
-
 
 SELECT * FROM dw.dim_calendario;
 
