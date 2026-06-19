@@ -270,7 +270,7 @@ SELECT
 
 FROM generate_series(
         DATE '2023-01-01',
-        DATE '2024-12-31',
+        DATE '2024-05-31',
         INTERVAL '1 day'
      ) AS g(dt);
 
