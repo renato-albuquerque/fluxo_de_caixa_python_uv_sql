@@ -403,3 +403,9 @@ SELECT * FROM dw.vw_dim_plano_contas;
 SELECT * FROM dw.vw_dim_calendario;
 SELECT * FROM dw.vw_ft_saldo_anterior;
 SELECT * FROM dw.vw_ft_movimentos;
+
+SELECT * FROM staging.st_movimentos
+WHERE "Data" IS NULL OR "Valor" = 0 OR "Valor" IS NULL;
+
+SELECT * FROM public.movimentos
+WHERE "Data" IS NULL OR "Valor" = 0 OR "Valor" IS NULL;
