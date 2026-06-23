@@ -20,6 +20,18 @@ SELECT * FROM staging.st_movimentos;
 SELECT * FROM staging.st_plano_contas;
 SELECT * FROM staging.st_saldo_anterior;
 
+/* 
+Obs.:
+Foram inseridos novos dados no dataset Movimentos.xlsx.
+Staging: Para a tabela st_movimentos, limpar e repopular. 
+É preciso realizar os UPDATES necessários na tabela staging.st_movimentos (ALTER TABLE).
+*/
+
+TRUNCATE TABLE staging.st_movimentos;
+INSERT INTO staging.st_movimentos SELECT * FROM public.movimentos;
+
+SELECT * FROM staging.st_movimentos;
+
 -- Transformações
 
 -- staging, tabela st_bancos
@@ -96,6 +108,27 @@ SELECT * FROM staging.st_movimentos;
 -- Inserindo colunas Banco_ID e Conta_ID. 
 -- Excluindo colunas Banco e Conta.
 CREATE TABLE staging.st_movimentos_new AS
+SELECT
+	b."Banco_ID",
+	c."Conta_ID",
+	m."Tipo",
+	m."Data",
+	m."Valor"
+FROM staging.st_movimentos m
+LEFT JOIN staging.st_bancos b ON m."Banco" = b."Banco"
+LEFT JOIN staging.st_plano_contas c ON m."Conta" = c."Conta";
+
+SELECT * FROM staging.st_movimentos_new;
+
+/* 
+Obs.:
+Foram inseridos novos dados no dataset Movimentos.xlsx.
+Staging: Para a tabela st_movimentos_new, limpar e repopular. 
+*/
+
+TRUNCATE TABLE staging.st_movimentos_new;
+
+INSERT INTO staging.st_movimentos_new
 SELECT
 	b."Banco_ID",
 	c."Conta_ID",
@@ -278,6 +311,19 @@ SELECT * FROM dw.dim_calendario;
 
 -- Criar tabela fato ft_movimentos.
 CREATE TABLE dw.ft_movimentos AS TABLE staging.st_movimentos_new;
+
+/* 
+Obs.:
+Foram inseridos novos dados no dataset Movimentos.xlsx.
+dw: Para a tabela dw_ft_movimentos, limpar e repopular. 
+*/
+
+TRUNCATE TABLE dw.ft_movimentos;
+
+INSERT INTO dw.ft_movimentos
+SELECT * FROM staging.st_movimentos_new;
+
+SELECT * FROM dw.vw_ft_movimentos;
 
 -- Resumo tabelas dw:
 SELECT * FROM dw.dim_bancos;
